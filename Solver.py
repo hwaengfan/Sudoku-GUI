@@ -1,4 +1,4 @@
-# O(n^2) time
+# O(9^n) time where n is the amount of unfilled positions
 def solve(board):
     find = findEmpty(board)
     if not find:

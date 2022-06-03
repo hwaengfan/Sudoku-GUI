@@ -40,7 +40,7 @@ class GUI:
         self.cubes[row][col].setTemp(val)
 
     # Draw everything
-    def drawGUI(self, secondsPlayed):
+    def drawGUI(self, secondsPlayed, strikes):
         self.screen.fill((255, 255, 255))
 
         # Draw grid lines
@@ -54,6 +54,9 @@ class GUI:
         # Draw timer
         self.drawTimer(secondsPlayed)
 
+        # Draw strikes
+        self.drawStrike(strikes)
+
     # Draw grid lines
     def drawGrid(self):
         gap = self.width / 9
@@ -62,8 +65,8 @@ class GUI:
                 thick = 4
             else:
                 thick = 1
-            pygame.draw.line(self.screen, (0, 0, 0), (0, i * gap),
-                             (self.width, i * gap), thick)
+            pygame.draw.line(self.screen, (0, 0, 0),
+                             (0, i * gap), (self.width, i * gap), thick)
             pygame.draw.line(self.screen, (0, 0, 0), (i * gap, 0),
                              (i * gap, self.height), thick)
 
@@ -81,6 +84,11 @@ class GUI:
         minutes = "0" + str(min) if min < 10 else str(min)
         seconds = "0" + str(sec) if sec < 10 else str(sec)
         return minutes + ":" + seconds
+
+    def drawStrike(self, strikes):
+        font = pygame.font.SysFont("Quicksand", 40)
+        text = font.render("X " * strikes, 1, (255, 0, 0))
+        self.screen.blit(text, (20, 560))
 
     #  When a cube is clicked
     def selectedCube(self, row, col):
@@ -117,3 +125,17 @@ class GUI:
                 self.cubes[row][col].setTemp(0)
                 self.updateModel()
                 return False
+
+    # Clear temp value
+    def clearTemp(self):
+        row, col = self.selectedPos
+        if self.cubes[row][col].value == 0:
+            self.cubes[row][col].set_temp(0)
+
+    # Check if the board is solved
+    def isFinished(self):
+        for i in range(self.numRows):
+            for j in range(self.numCols):
+                if self.cubes[i][j].value == 0:
+                    return False
+        return True

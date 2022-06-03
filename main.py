@@ -19,7 +19,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-            # If a cube is selected
+            # Click on a cube
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 coord = board.coordSelected(pos)
@@ -27,7 +27,7 @@ def main():
                     board.selectedCube(coord[0], coord[1])
                     key = None
 
-            # If a key is pressed
+            # Input numbers
             if event.type == pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_1 | pygame.K_KP1:
@@ -54,12 +54,18 @@ def main():
                         if board.cubes[i][j].temp != 0:
                             if not board.replaceTemp(currCube.temp):
                                 strikes += 1
+                                # Check if game is over
+                                if strikes == 3:
+                                    run = False
                             key = None
+
+                        if board.isFinished():
+                            print("Game over")
 
         if board.selectedPos and key != None:
             board.updateTemp(key)
 
-        board.drawGUI(secondsPlayed)
+        board.drawGUI(secondsPlayed, strikes)
         pygame.display.update()
 
 
